@@ -1,0 +1,64 @@
+//*********************Instalar minikube en WSL ubuntu 22.04 ******************************//
+
+//***************Update package repositories and upgrade packages:********************//
+
+sudo apt update && sudo apt upgrade -y
+
+//*************************Install Docker:**********************************//
+sudo apt install docker.io conntrack git -y
+
+//*************************instalar docker-compose**********************************//
+sudo apt-get install docker-compose
+
+//*************************verificar lo que esta instalado de docker**********************************//
+dpkg -l | grep -E 'docker-compose|docker-ce|containerd.io|ca-certificates|curl|gnupg|lsb-release'
+
+//************************Start Docker service:**********************************//
+sudo service docker start
+
+//**********************Add your user to the docker group:***************************//
+
+sudo usermod -aG docker $USER //En vez de $USER puede colocar su usuario que figuta antes del arroba en el promt EJM: intadmin
+
+//************************Adjust permissions for Docker socket:***********************//
+
+sudo chown $USER:docker /var/run/docker.sock  //En vez de $USER puede colocar su usuario que figuta antes del arroba en el promt EJM: intadmin
+
+//************************Install Minikube:******************************//
+
+curl -LO https://storage.googleapis.com/minikube/releases/latest/minikube-linux-amd64
+sudo install minikube-linux-amd64 /usr/local/bin/minikube
+
+//*************************Start Minikube:*******************************//
+
+minikube start //Tambien se puede utilizar --force como para el usuario root "no se recomienda"
+
+//***************************Install kubectl:*******************************//
+
+curl -LO https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl
+chmod +x kubectl
+mkdir -p $HOME/bin
+mv kubectl $HOME/bin/
+export PATH=$PATH:$HOME/bin
+
+//****************************Install Helm:*******************************//
+
+curl https://raw.githubusercontent.com/helm/helm/main/scripts/get-helm-3 -o get_helm.sh
+chmod 700 get_helm.sh
+./get_helm.sh
+
+//****************************Comandos utiles****************************//
+
+docker version
+minikube version
+kubectl version --short --client
+
+//**Iniciar minikube:
+minikube start
+minikube stop
+
+kubectl cluster-info
+
+sudo service docker start
+
+//*********************************************************************//
